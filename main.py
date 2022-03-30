@@ -49,7 +49,7 @@ def pruneGraphbyWeight(aMatrix,termlist):
 
 def uniongraph(terms, term_freq, adjmatrix, collection_terms, union_graph_termlist_id, union_gr, id,
                collection_term_freq, kcore, kcorebool,UnionPen):
-    #print(adjmatrix)
+    #print("hello")
     if UnionPen:
         union_penalty = 0.0595
     else:
