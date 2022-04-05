@@ -711,11 +711,20 @@ def load_doc_info(*args):
 # input the Query Q as a list of words consisting the Query
 def one_termsets(Q, trms, plist, minfreq):
     termsets = []
+    print("**********************************************************")
+    print(plist)
+    print("**********************************************************")
     One_termsets = []
     for word in Q:
         if word in trms:
             i = trms.index(word)
-            doc = plist[(i + 1)]
+            print("////////////////////////////////////////////////////////////////////////////")
+            print(i)
+            print("////////////////////////////////////////////////////////////////////////////")
+            doc = plist[(i)]
+            print("=========================================================================")
+            print(doc)
+            print("=========================================================================")
             doc = doc[::2]
             word = [''.join(word)]
             if len(doc) > minfreq:
