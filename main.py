@@ -1,3 +1,12 @@
+#TODO List:
+#TODO 1. generic path implementation. -> Na min xreiazetai na dwsoume karfwta paths.
+#TODO 2. fijcalculation SOS,
+#TODO 3. apriori lists SOS.
+#TODO (Optional): setup script.
+#TODO (Optional): docker implemetation.
+#TODO 4. split to mains test case mains in 4 pcs.
+#TODO 5. Akarepis idea.
+#The ROAD to d-GSB is opened
 import os
 
 import time
@@ -420,10 +429,10 @@ if menu == 1:
 elif menu == 2:
     # read files
     try:
-        ids, trms, W, plist = load_inv_index('invertedindex.dat')  # index of terms doukas - makris W
+        ids, trms, W, plist, plist_expanded = load_inv_index('invertedindex.dat')  # index of terms doukas - makris W
     except FileNotFoundError:
         invin = input('input inveted index for simple set based:')
-        ids, trms, W, plist = load_inv_index(invin)
+        ids, trms, W, plist, plist_expanded = load_inv_index(invin)
     try:
         docinfo = load_doc_info()
     except FileNotFoundError:
@@ -431,30 +440,30 @@ elif menu == 2:
         docinfo = load_doc_info(docin)
     try:
         invin = 'NegMain.dat'
-        ids1, trms1, W1, plist1 = load_inv_index('NegMain.dat')  # index of terms W using union penalty
+        ids1, trms1, W1, plist1, plist_expanded1 = load_inv_index('NegMain.dat')  # index of terms W using union penalty
     except FileNotFoundError:
         invin = input('input inveted index for maincore implementation:')
-        ids1, trms1, W1, plist1 = load_inv_index(invin)
+        ids1, trms1, W1, plist1, plist_expanded1 = load_inv_index(invin)
     try:
-        ids2, trms2, W2, plist2 = load_inv_index('PerSplit.dat')  # index of terms percentage window
+        ids2, trms2, W2, plist2, plist_expanded2 = load_inv_index('PerSplit.dat')  # index of terms percentage window
     except FileNotFoundError:
         invin = input('input inveted index for density implementation:')
-        ids2, trms2, W2, plist2 = load_inv_index(invin)
+        ids2, trms2, W2, plist2, plist_expanded2 = load_inv_index(invin)
     try:
-        ids3, trms3, W3, plist3 = load_inv_index('DotSplit.dat')  # index of terms splitting on dot
+        ids3, trms3, W3, plist3, plist_expanded3 = load_inv_index('DotSplit.dat')  # index of terms splitting on dot
     except FileNotFoundError:
         invin = input('input inveted index for CoreRank implementation:')
-        ids3, trms3, W3, plist3 = load_inv_index(invin)
+        ids3, trms3, W3, plist3, plist_expanded3 = load_inv_index(invin)
     try:
-        ids4, trms4, W4, plist4 = load_inv_index('ConstantWindFile.dat')  # index of terms with constant window - makris W
+        ids4, trms4, W4, plist4, plist_expanded4 = load_inv_index('ConstantWindFile.dat')  # index of terms with constant window - makris W
     except FileNotFoundError:
         invin = input('input inveted index for constant window implementation:')
-        ids4, trms4, W4, plist4 = load_inv_index(invin)	
+        ids4, trms4, W4, plist4, plist_expanded4 = load_inv_index(invin)	
     try:
-        ids5, trms5, W5, plist5 = load_inv_index('SenParConWind.dat')  # index of terms with constant sentence and paragraph window - makris W
+        ids5, trms5, W5, plist5, plist_expanded5 = load_inv_index('SenParConWind.dat')  # index of terms with constant sentence and paragraph window - makris W
     except FileNotFoundError:
         invin = input('input inveted index for constant sentence and paragraph window implementation:')
-        ids5, trms5, W5, plist5 = load_inv_index(invin)
+        ids5, trms5, W5, plist5, plist_expanded5 = load_inv_index(invin)
     
     # debug
     l = [i for i, j in zip(W, W1) if i == j]
@@ -521,7 +530,7 @@ elif menu == 2:
 
     for Query in Qtest:
         # Queries
-        Q = Query
+        Q = "TERM1 TERM2 TERM3 TERM4 TERM5"
         # Q = input('Input Query : ')
         print('Query ======== ',Q)
         Q = Q.upper()
@@ -536,12 +545,15 @@ elif menu == 2:
         #print(One_termsets)
         l1 = One_termsets
         final_list = apriori(l1, minfreq)
+        print(final_list)
         print('==Finished Generating the Frequent Sets==')
 
         # i domi tis final list einai [1-termsets][2-termsets].....[n-termsets]
         # ka8e upolista [[termset1][docs where the termset occurs],[[termset2][docs where the termset2 occurs]]......[[termsetN][docs where the termsetN occurs]]]
         # Documents and Queries Representation
-        docs, doc_vectors = fij_calculation(docinfo, final_list, plist, trms)
+        docs, doc_vectors = fij_calculation(file_list, final_list, plist_expanded, trms)
+        #print(docs)
+        print(doc_vectors)
         print('document vectors length : %d' % len(doc_vectors))
         idf_vec = calculate_idf(final_list, len(docinfo))
         W_vec = calculate_termset_W(final_list, W, trms)
@@ -779,39 +791,3 @@ elif menu == 2:
         writer.close()
 
 
-        # Todo :2. fine tune prune function to be consistent (DONE: USING THE MIN-MAX PRECENTAGE thus it will work on the whole collection but its too aggresive on nodes)
-        # Todo :using a path implementation seems more effective ------> tring and avarege of degrees
-        # Todo :3. (DONE) Unite graphs on  U graph (DONE)
-        # todo :4. (DONE) doukas  weights (DONE)
-        # Todo :5. Implement set based model-Quering
-        # Todo :(DONE)posting lists for terms - indexing as inverted index (DONE)
-        # TODO :(DONE)Write to file so loading from file is implemented for quering (DONE)
-        # TODO :(DONE)termsets(DONE)
-        # TODO :(DONE)termset weights 1.simple setbased model 2.doukas changes on setbasedmodel 3.my changes on doukas using k-core
-        # TODO :(DONE) calculate idf ,
-        # TODO :(DONE) termset weight product
-        # TODO :(DONE) combine the above
-        # TODO :(DONE) COSINE SIM (doc,Q)
-        # TODO :(DONE) do the above in functions and implment menu
-        # TODO :(DONE)SORT Results
-        # TODO :(DONE)create union graph considering the main core.
-        # Todo :6. time functions - > better representation
-        # QUALITY TODO :7. (DONE) plot the graphs and save them in a tidy manner  (DONE WHEN IT WAS POSSIBLE) [possible bug on union graph plot on max scale]
-        # QUALITY TODO :8.  better plots, result ploting, clean up src
-
-        # PERFROMANCE TODO :A. USE DICT TO TEST MEMBERSHIP(DONE)  B. PROFILE FUNCTIONS TO SEE WHERE THE PREFORMANCE IS SLOW(DONE AND FIXED) C. CATCH MEMORY ERRORS SAVE UNIONGRPH AND IMPLEMENT
-        #                   MECHANISM TO CREATE PARTIALLY THE INV INDEX(?)
-
-        #TODO: **************SOS*********************************
-        #TODO: SOS check how do we perform in large,medium,small Qs meaning queries with lots,medium number,small number of relevant docs
-
-        #TODO: find the best parameters for pruning the complete graph . Starting: @+30%, +20%,+10%, -10%, -20%, -30%, and compare the results
-
-        #TODO:V2: -> stopwords, stop preproccess if texts is already proccessed done
-        #TODO:V2: -> method menu done
-        #TODO:V2: -> density method done
-        #TODO:V2: -> elbow method done
-        #TODO:V2: -> inf method done
-        #TODO:V2: -> core Rank method done
-        #TODO:V2: -> script the proccess ------
-        #Todo V2: -> k trusses

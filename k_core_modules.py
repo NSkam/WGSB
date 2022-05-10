@@ -680,6 +680,7 @@ def load_inv_index(*args):
     trms = []
     W = []
     plist = []
+    plist_expanded = []
     with open(invindex, 'r') as csvf:
         reader = csv.reader(csvf, delimiter=";")
         for row in reader:
@@ -688,9 +689,11 @@ def load_inv_index(*args):
                 trms.append(row[1])
                 W.append(row[2])
                 plist.append(row[3].split(','))
+                plist_expanded.append(row[1])
+                plist_expanded.append(row[3].split(','))
     csvf.close()
     # print(len(ids))
-    return ids, trms, W, plist
+    return ids, trms, W, plist, plist_expanded
 
 
 def load_doc_info(*args):
@@ -711,21 +714,13 @@ def load_doc_info(*args):
 # input the Query Q as a list of words consisting the Query
 def one_termsets(Q, trms, plist, minfreq):
     termsets = []
-    print("**********************************************************")
-    print(plist)
-    print("**********************************************************")
     One_termsets = []
     for word in Q:
         if word in trms:
             i = trms.index(word)
-            print("////////////////////////////////////////////////////////////////////////////")
-            print(i)
-            print("////////////////////////////////////////////////////////////////////////////")
             doc = plist[(i)]
-            print("=========================================================================")
-            print(doc)
-            print("=========================================================================")
             doc = doc[::2]
+            #print(doc)
             word = [''.join(word)]
             if len(doc) > minfreq:
                 One_termsets.append([word, doc])
@@ -734,57 +729,62 @@ def one_termsets(Q, trms, plist, minfreq):
     return One_termsets
 
 
-def fij_calculation(docinfo, final_list, plist, trms):
-    doc_vectors = []
-    docs = []
-    # counting the number of apperances of each termset in each doc in which the set exists
-
-    for document in docinfo:
-        # print('============doc name =============')
-        # print(document[0])
-        docs.append([document[0]])  # not needed
-        # k = 1
-        # test is a temp list which contains the termfreq of TSets for the current doc, then we append that list to create
-        # a matrix of [Docs X Termsets].
-        test = []
-        for itemsets in final_list:
-            # print('------------------------------%d- termset is:--------------------------------'%k)
-            # print(itemsets)
-            # k+=1
-            # print(len(itemsets))
-            for i in range(len(itemsets)):
-                # calculating termset frequency
-                if document[0] in itemsets[i][1]:
-                    # option 2: na xrisimopoisw ti lista pou exw dimiourgisei apo to inverted file
-                    # print('............')
-                    # print(itemsets[i])
-                    sum = 0
-                    for term in itemsets[i][0]:
-                        if term in trms:
-                            termindx = trms.index(term)
-                            # print(termindx)
-                            # print(ids[termindx])
-                            # print(trms[termindx])
-                            # print(plist[termindx])
-                            if document[0] in plist[termindx]:
-                                docindex = plist[termindx].index(document[0])
-                                # print('edw:%s'%plist[termindx][docindex+1])
-                                sum += int(plist[termindx][
-                                               docindex + 1])  # to amesws epomeno stoixeio antistoixei ston ari8mo emfanisis tou orou TERM(i) sto Document(j)
-                    test.append(sum)
+def fij_calculation(file_list, final_list, plist, trms):
+    
+    docs =[]
+    doc_list = []
+    weight_doc_matrix = []
+    doc_vec = []
+    
+    #print(file_list)
+    #print(final_list)
+    #print("\n\n\n\n")
+    #print(plist)
+    #sprint(trms)
+    for itemsetList in final_list:
+        #print("i ======= %s"%i)
+        #print(itemsetList)
+        for itemset in itemsetList:
+            #print(itemset)
+            #print(file[0])
+            print(len(file_list))
+            for file in file_list:
+                #print(file[0])
+                docs.append(file[0])
+                
+                #print(itemset[1])
+                if file[0] in itemset[1]:
+                    #print(plist[1])
+                    itemsetTerms = itemset[0]
+                    #print(itemsetTerms)
+                    for itemset_term in itemsetTerms:
+                        #print(itemset_term)
+                        for j in range(0,len(plist),1):
+                            #print(plist[j])
+                            #print(itemset_term)
+                            #print(plist[j-1])
+                            if itemset_term in plist[j]:
+                                if file[0] in plist[j+1]:
+                                    file_index = plist[j+1].index(file[0])
+                                    #print("File index" + str(file_index))
+                                    weight =  plist[j+1][file_index+1]
+                                    #print(file_index)
+                                    weight_doc_matrix.append(int(weight))
+                                    #print(file[0])
+                                    #print(weight)
+                    #print(weight_doc_matrix)
+                    doc_vec.append(min(weight_doc_matrix))
+                    weight_doc_matrix = []
                 else:
-                    test.append(0)
-        if len(test) == 1213:
-            print(len(test))
-            print('problem')
-            exit(-2)
-        doc_vectors.append(test)
-    with open('debuglog.dat', 'a') as fd:
-        fd.write('doc vectors \n')
-        for doci in doc_vectors:
-            fd.write('%s \n' % str(len(doci)))
-    fd.close()
-    return docs, doc_vectors
+                    doc_vec.append(0)
+            doc_list.append(doc_vec)
+            doc_vec = []
+        #print(doc_list)
+    doc_list = numpy.transpose(doc_list)
+    #print(doc_list)
+    doc_list = doc_list.tolist()
+    #print(doc_list)
+    return docs, doc_list
 
 
 def calculate_idf(termsetsL, numofdocs):
