@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 import os
 import shutil
 import xlsxwriter
+
 
 """"IMPORTANT NOTICE: depending on the testing and the option the main function arguments needs to be configured properly
 THATS depends on the testing which at the moment is on board. FOR EXAMPLE:
@@ -65,7 +68,7 @@ else:
     print("TESTING!")
 
 def PrepareForNextRound(counter,test_str,col):
-    path = ["figures"," ",col]
+    path = ["figures","/",col]
     path = "".join(path)
     namelist = [str(counter)," ", test_str," ",col]
     name = "".join(namelist)
@@ -103,20 +106,38 @@ counter = 0
 #sys.args[5] = constant window size, sys.args[6] = paragraph size - sys.args[7] = percentage window.
 #example:  main_v2.py 700 0.2 1 1 3 200 0.091')
 
-# os.system('python main_v3.py 700 0.2 1 1 20 200 0.091')
-# os.system('python main_v3.py 700 0.2 1 2 50 200 0.091')
-# os.system('python main_v3.py 700 0.2 1 3 0 200 0.091')
-# os.system('python main_v3.py 700 0.2 1 4 3 200 0.091')
-# os.system('python main_v3.py 700 0.2 1 5 3 200 0.091')
-# os.system('python main_v3.py 700 0.2 1 6 3 200 0.091')
+
+# test with window size 3
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 1 3 80 0.091') # maincore
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 2 3 80 0.091') # GSB
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 3 3 80 0.091') # Density
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 4 3 80 0.091') # CoreRank
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 5 3 80 0.091') # COnstant
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 6 3 80 0.091') # SenPar
 #
 #
-# os.system('python main_v3.py 700 0.2 2')
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.2 2')
 
 #name for file in figures directory
-testname = "test9"
+testname = "GSB_w_cores_constant"
 col = "CF"
 
 PrepareForNextRound(counter,testname,col)
 counter+=1
 
+# test with window size 5
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 1 5 80 0.091') # maincore
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 2 5 80 0.091') # GSB
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 3 5 80 0.091') # Density
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 4 5 80 0.091') # CoreRank
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 5 5 80 0.091') # COnstant
+os.system('python3 main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 6 5 80 0.091') # SenPar
+#
+#
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.2 2')
+
+#name for file in figures directory
+testname = "GSB_w_cores_constant"
+
+PrepareForNextRound(counter,testname,col)
+counter+=1
