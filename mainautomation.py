@@ -16,21 +16,45 @@ def init_function(test_path):
     try:
         os.mkdir(path)
     except:
-        print("EXISTS")
+        print("EXISTS txtfiles")
     #create figures: the results files
     temp =[test_path, "/figures"]
     path = "".join(temp)
     try:
         os.mkdir(path)
     except:
-        print("EXISTS")
+        print("EXISTS figures")
+    temp = [test_path, "/figures/CF"]
+    path = "".join(temp)
+    try:
+        os.mkdir(path)
+    except:
+        print("EXISTS CF")
+    temp = [test_path, "/figures/CRAN"]
+    path = "".join(temp)
+    try:
+        os.mkdir(path)
+    except:
+        print("EXISTS CRAN")
+    temp = [test_path, "/figures/TIME"]
+    path = "".join(temp)
+    try:
+        os.mkdir(path)
+    except:
+        print("EXISTS TIME")
+    temp = [test_path, "/figures/NPL"]
+    path = "".join(temp)
+    try:
+        os.mkdir(path)
+    except:
+        print("EXISTS NPL")
     #create backup: usefull directory to store items collection not code important though
     temp=[test_path, "/backup"]
     path = "".join(temp)
     try:
         os.mkdir(path)
     except:
-        print("EXISTS")
+        print("EXISTS Backup")
 
     return 0
 
@@ -40,17 +64,14 @@ if "txtfiles" not in os.listdir(core_path):
 else:
     print("TESTING!")
 
-def PrepareForNextRound(counter,test_str):
-    path = "figures"
-    namelist = [str(counter)," ", test_str]
+def PrepareForNextRound(counter,test_str,col):
+    path = ["figures"," ",col]
+    path = "".join(path)
+    namelist = [str(counter)," ", test_str," ",col]
     name = "".join(namelist)
     print(name)
     dirpath = os.path.join(path, name)
     print(dirpath)
-    try:
-        os.mkdir("figures/allq")
-    except:
-        print("EXISTS")
     try:
         os.mkdir(dirpath)
     except:
@@ -94,8 +115,8 @@ counter = 0
 
 #name for file in figures directory
 testname = "test9"
+col = "CF"
 
-
-PrepareForNextRound(counter,testname)
+PrepareForNextRound(counter,testname,col)
 counter+=1
 
