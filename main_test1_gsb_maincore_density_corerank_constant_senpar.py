@@ -472,10 +472,10 @@ if menu == 1:
 elif menu == 2:
     # read files
     try:
-        ids, trms, W, plist = load_inv_index('invertedindex.dat')  # index of terms doukas - makris W
+        ids, trms, W, plist, plist_expanded = load_inv_index('invertedindex.dat')  # index of terms doukas - makris W
     except FileNotFoundError:
         invin = input('input inveted index for simple set based:')
-        ids, trms, W, plist = load_inv_index(invin)
+        ids, trms, W, plist, plist_expanded = load_inv_index(invin)
     try:
         docinfo = load_doc_info()
     except FileNotFoundError:
@@ -483,31 +483,31 @@ elif menu == 2:
         docinfo = load_doc_info(docin)
     try:
         invin = 'NegMain.dat'
-        ids1, trms1, W1, plist1 = load_inv_index('NegMain.dat')  # index of terms W using union penalty
+        ids1, trms1, W1, plist1, plist_expanded1 = load_inv_index('NegMain.dat')  # index of terms W using union penalty
     except FileNotFoundError:
         invin = input('input inveted index for maincore implementation:')
-        ids1, trms1, W1, plist1 = load_inv_index(invin)
+        ids1, trms1, W1, plist1, plist_expanded1 = load_inv_index(invin)
     try:
-        ids2, trms2, W2, plist2 = load_inv_index('PerSplit.dat')  # index of terms percentage window
+        ids2, trms2, W2, plist2, plist_expanded2 = load_inv_index('PerSplit.dat')  # index of terms percentage window
     except FileNotFoundError:
         invin = input('input inveted index for density implementation:')
-        ids2, trms2, W2, plist2 = load_inv_index(invin)
+        ids2, trms2, W2, plist2, plist_expanded2 = load_inv_index(invin)
     try:
-        ids3, trms3, W3, plist3 = load_inv_index('DotSplit.dat')  # index of terms splitting on dot
+        ids3, trms3, W3, plist3, plist_expanded3 = load_inv_index('DotSplit.dat')  # index of terms splitting on dot
     except FileNotFoundError:
         invin = input('input inveted index for CoreRank implementation:')
-        ids3, trms3, W3, plist3 = load_inv_index(invin)
+        ids3, trms3, W3, plist3, plist_expanded3 = load_inv_index(invin)
     try:
-        ids4, trms4, W4, plist4 = load_inv_index('ConstantWindFile.dat')  # index of terms with constant window - makris W
+        ids4, trms4, W4, plist4, plist_expanded4 = load_inv_index('ConstantWindFile.dat')  # index of terms with constant window - makris W
     except FileNotFoundError:
         invin = input('input inveted index for constant window implementation:')
-        ids4, trms4, W4, plist4 = load_inv_index(invin)	
+        ids4, trms4, W4, plist4, plist_expanded4 = load_inv_index(invin)
     try:
-        ids5, trms5, W5, plist5 = load_inv_index('SenParConWind.dat')  # index of terms with constant sentence and paragraph window - makris W
+        ids5, trms5, W5, plist5, plist_expanded5 = load_inv_index('SenParConWind.dat')  # index of terms with constant sentence and paragraph window - makris W
     except FileNotFoundError:
         invin = input('input inveted index for constant sentence and paragraph window implementation:')
-        ids5, trms5, W5, plist5 = load_inv_index(invin)
-    
+        ids5, trms5, W5, plist5, plist_expanded5 = load_inv_index(invin)
+
     # debug
     l = [i for i, j in zip(W, W1) if i == j]
     print(l)
@@ -545,7 +545,7 @@ elif menu == 2:
     recall_constant_window = []
     precision_sen_par_window = []
     recall_sen_par_window = []
-    
+
     av_recall =[]
     av_precision= []
     av_precision_gsb_union_pen=[]
@@ -569,11 +569,11 @@ elif menu == 2:
         try:
             return sum(lst)/len(lst)
         except ZeroDivisionError:
-            return 0 		
+            return 0
 
     for Query in Qtest:
         # Queries
-        Q = Query
+        #Q = "TERM1 TERM2 TERM3 TERM4 TERM5"
         # Q = input('Input Query : ')
         print('Query ======== ',Q)
         Q = Q.upper()
@@ -588,12 +588,15 @@ elif menu == 2:
         #print(One_termsets)
         l1 = One_termsets
         final_list = apriori(l1, minfreq)
+        print(final_list)
         print('==Finished Generating the Frequent Sets==')
 
         # i domi tis final list einai [1-termsets][2-termsets].....[n-termsets]
         # ka8e upolista [[termset1][docs where the termset occurs],[[termset2][docs where the termset2 occurs]]......[[termsetN][docs where the termsetN occurs]]]
         # Documents and Queries Representation
-        docs, doc_vectors = fij_calculation(docinfo, final_list, plist, trms)
+        docs, doc_vectors = fij_calculation(file_list, final_list, plist_expanded, trms)
+        #print(docs)
+        print(doc_vectors)
         print('document vectors length : %d' % len(doc_vectors))
         idf_vec = calculate_idf(final_list, len(docinfo))
         W_vec = calculate_termset_W(final_list, W, trms)
@@ -603,11 +606,11 @@ elif menu == 2:
         W_vec2 = calculate_termset_W(final_list, W2, trms)
 
         W_vec3 = calculate_termset_W(final_list, W3, trms)
-        
+
         W_vec4 = calculate_termset_W(final_list,W4,trms)
-		
+
         W_vec5 = calculate_termset_W(final_list,W5,trms)
-        
+
         print('===================================')
         # Query representation : (DOUKAS MAKRIS)
         # The query vector should be the idf vector , because let,
@@ -650,7 +653,7 @@ elif menu == 2:
         graphextention_set_based_using_dot_split = q_D_similarities(query, documentmatrix, docs)
         sorted_graphextention_set_based_using_dot_split = sorted(graphextention_set_based_using_dot_split,
                                                             key=itemgetter(1), reverse=True)
-                                                            
+
         documentmatrix = doc_rep(doc_vectors, idf_vec, W_vec4)
         graphextention_set_based_using_constant_window = q_D_similarities(query, documentmatrix, docs)
         sorted_graphextention_set_based_using_constant_window = sorted(graphextention_set_based_using_constant_window,
@@ -673,7 +676,7 @@ elif menu == 2:
             except:
                 return None
         print(relevant)
-        
+
         list0 = [x[0].replace('txtfiles\\', '') for x, y in sorted_simple_set_based]
         temp_var = pre_rec_calculation(list0,relevant) #temp_var[0] = average precision / temp_var[1] = average recall
         av_precision.append(temp_var[0])
@@ -701,21 +704,21 @@ elif menu == 2:
         av_recall_gsb_per_wind.append(temp_var[1])
         precision_gsb_per_wind = temp_var[2]
         recall_gsb_per_wind = temp_var[3]
-        
+
         list4 = [x[0].replace('txtfiles\\', '') for x, y in sorted_graphextention_set_based_using_dot_split]
         temp_var = pre_rec_calculation(list4,relevant) #temp_var[0] = average precision / temp_var[1] = average recall
         av_precision_gsb_dot_split.append(temp_var[0])
         av_recall_gsb_dot_split.append(temp_var[1])
         precision_gsb_dot_split = temp_var[2]
         recall_gsb_dot_split = temp_var[3]
-        
+
         list5 = [x[0].replace('txtfiles\\', '') for x, y in sorted_graphextention_set_based_using_constant_window]
         temp_var = pre_rec_calculation(list5,relevant) #temp_var[0] = average precision / temp_var[1] = average recall
         av_precision_constant.append(temp_var[0])
         av_recall_constant.append(temp_var[1])
         precision_constant_window = temp_var[2]
         recall_constant_window = temp_var[3]
-        
+
         list6 = [x[0].replace('txtfiles\\', '') for x, y in sorted_graphextention_set_based_using_sen_par_window]
         temp_var = pre_rec_calculation(list6,relevant) #temp_var[0] = average precision / temp_var[1] = average recall
         av_precision_sen_par.append(temp_var[0])
@@ -737,7 +740,7 @@ elif menu == 2:
         plt.plot(recall_gsb_dot_split, precision_gsb_dot_split, '-m', label='Graph extention with dot split')
         plt.plot(recall_constant_window, precision_constant_window, '-c', label='Graph extention with Constant Window')
         plt.plot(recall_sen_par_window, precision_sen_par_window, '-k', label='Graph extention with Sentence/Paragraph Window')
-         
+
         plt.legend()
         plt.title('Q:' + str(Query) + '(h=---, support > 0 )')
         plt.ylabel('precision')
@@ -745,7 +748,7 @@ elif menu == 2:
         plt.grid()
 
         #plt.show()
-        #plt.savefig('figures/allq/'+str(Query)+'.png')
+        plt.savefig('figures/allq/'+str(Query)+'.png')
         plt.close('all')
     #print('Av_Precision = ',av_precision)
     #print('Av_Recall = ',av_recall)
@@ -761,10 +764,10 @@ elif menu == 2:
     #print('av_recall_constant = ', av_recall_constant)
     #print('av_precision_sen_par = ', av_precision_sen_par)
     #print('av_recall_sen_par = ', av_recall_sen_par)
-    
+
 
     invin = 'someinput.dat'
-    with open('figures/allq/avarage.txt', 'a') as fd:
+    with open('figures/avarage.txt', 'a') as fd:
         fd.write('File = %s\n' %str(invin))
         fd.write('#-------set based\n')
         fd.write('Av_Precision = %s\n' %str(av_precision))
@@ -821,8 +824,8 @@ elif menu == 2:
         df = pd.DataFrame.from_dict({"set based":av_precision,"doukas":av_precision_gsb,"Negative Maincore":av_precision_gsb_union_pen,
                                      "Percentage Split":av_precision_gsb_per_wind,"Dot Split":av_precision_gsb_dot_split,"Constant WIndow":av_precision_constant, "Sentence_Paragraph":av_precision_sen_par, "Gsb-set":setMdouk
                                      ,"neg-main-set":setMmain,"perc-set":setMdens,"dot-set":setMcr, "Constant_Window-set":setMcon, "Sentence_Paragraph-set":setMsp})
-        writer = pd.ExcelWriter("D:/Kostis Skamnelos/Desktop/code_12_pen_stopword/new_res.xlsx" , engine="openpyxl" , mode="a")
-        writer.book = load_workbook("D:/Kostis Skamnelos/Desktop/code_12_pen_stopword/new_res.xlsx" )
+        writer = pd.ExcelWriter("C:/Users/nrk_pavilion/PycharmProjects/WGSB_1/new_res.xlsx" , engine="openpyxl" , mode="a")
+        writer.book = load_workbook("C:/Users/nrk_pavilion/PycharmProjects/WGSB_1/new_res.xlsx" )
         try:
             df.to_excel(writer,header=True)
         except ValueError:
