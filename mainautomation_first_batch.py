@@ -195,3 +195,37 @@ testname = "GSB_w_cores_constant"
 
 PrepareForNextRound(counter,testname,col)
 counter+=1
+
+# test with window size 17
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 1 17 80 0.091') # maincore
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 2 17 80 0.091') # GSB
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 3 17 80 0.091') # Density
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 4 17 80 0.091') # CoreRank
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 5 17 80 0.091') # COnstant
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 6 17 80 0.091') # SenPar
+#
+#
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.2 2')
+
+#name for file in figures directory
+testname = "GSB_w_cores_constant"
+
+PrepareForNextRound(counter,testname,col)
+counter+=1
+
+# test with window size 20
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 1 20 80 0.091') # maincore
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 2 20 80 0.091') # GSB
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 3 20 80 0.091') # Density
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 4 20 80 0.091') # CoreRank
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 5 20 80 0.091') # COnstant
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.4 1 6 20 80 0.091') # SenPar
+#
+#
+os.system('python main_test1_gsb_maincore_density_corerank_constant_senpar.py 700 0.2 2')
+
+#name for file in figures directory
+testname = "GSB_w_cores_constant"
+
+PrepareForNextRound(counter,testname,col)
+counter+=1
